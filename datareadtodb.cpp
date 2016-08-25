@@ -454,7 +454,7 @@ void DataReadToDB::on_updateDataButton_clicked()
 	{
         progress.setLabelText(QString("update file NO.%1 ").arg(i+1));
         progress.setValue(i);
-		qApp->processEvents();
+//		qApp->processEvents();
 		if (progress.wasCanceled())
 		{
 			return;
@@ -477,9 +477,10 @@ void DataReadToDB::on_updateDataButton_clicked()
 				line1 = stream.readLine();
 				line2 = stream.readLine();
 				SSCNUMBER = line1.mid(2,5).trimmed().toInt();
-
-				QSqlQuery query;
-                query.exec(QString("select * from SAT where ssc_number = %1").arg(SSCNUMBER));
+                if(SSCNUMBER == 7530)
+                    int a = 0;
+                QSqlQuery query(QString("select * from SAT where ssc_number = %1").arg(SSCNUMBER),db);
+                query.exec();
                 if(!query.next())
                     db.exec(QString("insert into SAT(ssc_number,name,TLE_LINE1,TLE_LINE2) values(%1,'%2','%3','%4')").arg(SSCNUMBER).arg(SatName).arg(line1).arg(line2));
                 else
@@ -525,8 +526,8 @@ void DataReadToDB::doGet(QNetworkReply *reply)
             QByteArray SSCTLE1 = reply->readLine().trimmed();
             QByteArray SSCTLE2 = reply->readLine().trimmed();
             SSCNUMBER = (QString::fromUtf8(SSCTLE1)).mid(2, 5).trimmed().toInt();
-            QSqlQuery query;
-            query.exec(QString("select * from SAT where ssc_number = %1").arg(SSCNUMBER));
+            QSqlQuery query(QString("select * from SAT where ssc_number = %1").arg(SSCNUMBER),db);
+            query.exec();
             if(!query.next())
                 db.exec(QString("insert into SAT(ssc_number,name,TLE_LINE1,TLE_LINE2) values(%1,'%2','%3','%4')")
                         .arg(SSCNUMBER)
