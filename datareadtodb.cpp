@@ -27,8 +27,8 @@ void DataReadToDB::initOperation()
 {
     closeFile();
     SD_TCE_DB();
-//    initFileList();
-//    updateSWData();
+    initFileList();
+    updateSWData();
     initPostGet();
 }
 
